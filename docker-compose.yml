@@ -1,0 +1,22 @@
+version: '2'
+services:
+  sa_session_ss_db:
+    platform: linux/amd64
+    image: mysql:5.7
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: arqui
+      MYSQL_USER: arquisoft
+      MYSQL_PASSWORD: arqui
+      MYSQL_DATABASE: sa_session_ss_dev
+      MYSQL_HOST: sa_session_ss_db
+  sa_session_ss:
+    platform: linux/amd64
+    build: .
+    command: bash -c "sleep 40 && rm -f tmp/pids/server.pid && bundle exec rails db:migrate && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - sa_session_ss_db
+
